@@ -1,0 +1,131 @@
+function Unicorn.new 0
+push constant 5
+call Memory.alloc 1
+pop pointer 0
+push constant 50
+pop this 2
+push constant 15
+pop this 0
+push constant 190
+pop this 1
+push constant 0
+pop this 3
+push constant 2
+pop this 4
+push pointer 0
+return
+function Unicorn.getX 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Unicorn.getY 0
+push argument 0
+pop pointer 0
+push this 1
+return
+function Unicorn.getSize 0
+push argument 0
+pop pointer 0
+push this 2
+return
+function Unicorn.show 0
+push argument 0
+pop pointer 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push this 2
+add
+push this 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Unicorn.erase 0
+push argument 0
+pop pointer 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push this 2
+add
+push this 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Unicorn.jump 0
+push argument 0
+pop pointer 0
+push this 1
+push constant 190
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 25
+neg
+pop this 3
+push pointer 0
+call Unicorn.move 1
+pop temp 0
+label IF_FALSE0
+push constant 0
+return
+function Unicorn.move 0
+push argument 0
+pop pointer 0
+push this 1
+push this 3
+add
+push constant 0
+gt
+push this 1
+push this 3
+add
+push constant 191
+lt
+and
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+call Unicorn.erase 1
+pop temp 0
+push this 1
+push this 3
+add
+pop this 1
+push this 3
+push this 4
+add
+pop this 3
+push pointer 0
+call Unicorn.show 1
+pop temp 0
+label IF_FALSE0
+push constant 5
+call Sys.wait 1
+pop temp 0
+push constant 0
+return
+function Unicorn.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return

@@ -1,0 +1,66 @@
+class Train
+{
+    field int si, x, y, lvl;
+
+    constructor Train new(int l)
+    {
+        let si = 30;
+        let x = 470;
+        let y = 210;
+        let lvl = l;
+        return this;
+    }
+
+    method int getX()
+    {
+        return x;
+    }
+
+    method int getY()
+    {
+        return y;
+    }
+
+    method int getSize()
+    {
+        return si;
+    }
+
+    method void show()
+    {
+        if((x<471) & (x>0) & (y<211) & (y>0))
+        {
+            do Screen.setColor(true);            
+            do Screen.drawRectangle(x, y, x+si, y+si);
+        }
+        return;
+    }
+
+
+    method void move()
+    {
+        if(x>0)
+        {
+            do Screen.setColor(false);
+            do Screen.drawRectangle(x+si-10-lvl, y, x+si, y+si);
+            let x = x - 10 - lvl;
+        }
+        do show();
+        do Sys.wait(15);
+        return;
+    }
+
+    method void resetPos()
+    {
+        let x = 470;
+        return;
+    }
+
+    method void erase()
+    {
+        do Screen.setColor(false);            
+        do Screen.drawRectangle(x, y, x+si, y+si);
+        return;
+    }
+
+}

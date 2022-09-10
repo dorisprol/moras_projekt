@@ -1,0 +1,177 @@
+class Sketch
+{
+    field Unicorn unicorn;
+    field char key;
+    field int lvl;
+    field Train train;
+
+    field int Score;
+
+    field int trainPosX;
+    field int trainPosY;
+    field int trainSize;
+
+    field int unicornPosX;
+    field int unicornPosY;
+    field int unicornSize;
+
+    field int trainTimer;
+
+    field int n;
+
+    constructor Sketch new()
+    {
+        var Random generator;
+
+        var boolean exit;
+
+        do chooseLevel();
+
+        let Score = 0;
+        let trainTimer = 10;
+        let n = 13;
+
+        let exit = false;
+        let unicorn = Unicorn.new();
+        let train = Train.new(lvl);
+        let generator = Random.new(Score);
+        while(~exit)
+        {
+            while (trainTimer > 10) {
+
+               do train.erase(); 
+               do train.resetPos();
+
+                let key = Keyboard.keyPressed();
+                do draw();
+
+                if (key = 131 /*up arrow*/) 
+                { 
+                    do unicorn.jump();
+                    let n = Random.new(n + Score);
+                    let n = generator.generateRandNum() + n;
+                }
+
+
+                let trainTimer = trainTimer - (lvl * 50) - 50;
+
+
+                let n = n+1;
+            }
+
+            let key = Keyboard.keyPressed();
+            do draw();
+    
+            if (key = 131 /*up arrow*/) 
+            { 
+                do unicorn.jump();
+                let n = Random.new(n + 16);
+                let n = generator.generateRandNum() + n;
+            }
+
+            let trainPosX = train.getX();
+            let trainPosY = train.getY();
+            let trainSize = train.getSize();
+
+            let unicornPosX = unicorn.getX();
+            let unicornPosY = unicorn.getY();
+            let unicornSize = unicorn.getSize();
+
+            // Collision check
+            if (trainPosX < (unicornPosX + unicornSize) & (trainPosY < (unicornPosY + unicornSize)) | (trainPosY + trainSize < (unicornPosY + unicornSize))) 
+                { let exit = true; 
+                  do exitScreen();
+                }
+
+
+            if (trainPosX < 1) {
+
+                let generator = Random.new(n);
+
+                let trainTimer = generator.generateRandNum() + n;
+
+                let n = trainTimer;
+
+
+                let Score = Score + lvl;
+                
+                do Output.backSpace();
+
+                if ((Score - lvl) > 9) {
+                    do Output.backSpace();
+                }
+
+                if ((Score - lvl) > 99) {
+                    do Output.backSpace();
+                }
+
+                do Output.printInt(Score);
+
+
+                // Win condition
+                if (Score > 59)
+                    { do winScreen(); return this; }
+            }
+
+
+        }
+        return this;
+    }
+
+
+    method void draw()
+    {
+        var int num, i, j;
+
+            do unicorn.show();
+            do unicorn.move();
+            do train.show();
+            do train.move();
+
+        return;
+    }
+
+
+    method void chooseLevel()
+    {
+        do Output.printString("JUMPY BOX");
+        do Output.println();
+        let lvl = Keyboard.readInt("Odaberite tezinu 1 - 5: ");
+        if((lvl > 0) & (lvl < 6))
+        {
+            do Screen.clearScreen();
+            do Output.moveCursor(3, 13);
+            do Output.printString("Level: ");
+            do Output.printInt(lvl);
+            do Output.printString("    ");
+            do Output.printString("Score: 0");
+            return;
+        }
+        do chooseLevel();
+        return;
+    }
+
+    method void winScreen()
+    {
+        do Screen.clearScreen();
+
+        do Output.moveCursor(6, 24);
+        do Output.printString("JUMPY BOX WON");
+
+        do Output.moveCursor(7, 26);
+        do Output.printString("Score: ");
+        let Score = Score * (Math.divide(lvl, 2) + 1);
+        do Output.printInt(Score);
+
+        return;
+    }
+
+    method void exitScreen()
+    {
+        do Screen.clearScreen();        
+        do Output.printString("GAME OVER");
+        return;
+    }
+
+ 
+}
