@@ -5,6 +5,7 @@ class Main {
         var Sketch game;
 
         let game = Sketch.new();
+        do game.dispose();
  
         return;
     }
