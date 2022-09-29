@@ -120,6 +120,8 @@ class Sketch {
             }
 
         }
+        do obstacle.dispose();
+        do player.dispose();
         return this;
     }
 
@@ -185,5 +187,11 @@ class Sketch {
 
         return;
     }
+    
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
 
 }
