@@ -1,0 +1,189 @@
+class Sketch {
+
+    field Player player;
+    field Obstacle obstacle;
+
+    field char key;
+
+    field int lvl;
+    field int score;
+    field int maxScore;
+
+    field int obstaclePosX;
+    field int obstaclePosY;
+    field int obstacleSize;
+
+    field int playerPosX;
+    field int playerPosY;
+    field int playerSize;
+
+    field int obstacleTimer;
+
+    field int n;
+
+    constructor Sketch new() {
+
+        var boolean exit;
+
+        do chooseLevel();
+
+        let score = 0;
+        let obstacleTimer = 10;
+
+        let exit = false;
+        let player = Player.new();
+        let obstacle = Obstacle.new(lvl);
+        let n = 0;
+
+        while(~exit) {
+            do Sys.wait(18 - (lvl * 2));
+
+            while (obstacleTimer > 1) {
+                do Sys.wait(25);
+
+                let key = Keyboard.keyPressed();
+                do drawPlayer();
+
+                if (key = 131 /*up arrow*/) { 
+                    do player.jump();
+                }
+
+                if (key = 32 /*space*/) { 
+                    do player.jump();
+                }
+
+                let obstacleTimer = obstacleTimer - 2;
+            }
+
+            let key = Keyboard.keyPressed();
+
+            if (key = 131 /*up arrow*/) { 
+                do player.jump();
+            }
+
+            if (key = 32 /*space*/) { 
+                do player.jump();
+            }
+
+            do drawPlayer();
+            do drawObstacle();
+
+            // Collision check
+            let obstaclePosX = obstacle.getX();
+            let obstaclePosY = obstacle.getY();
+            let obstacleSize = obstacle.getSize();
+
+            let playerPosX = player.getX();
+            let playerPosY = player.getY();
+            let playerSize = player.getSize();
+
+            if (obstaclePosX < (playerPosX + playerSize) & ((obstaclePosY < (playerPosY + playerSize)) | (obstaclePosY + obstacleSize < (playerPosY + playerSize)))) {
+                let exit = true; 
+                do exitScreen(false);
+            }
+
+            if (obstaclePosX < 10) {
+                do obstacle.erase();
+                do obstacle.resetPos();
+
+                //Obstacle timings
+
+                let obstacleTimer = (obstacleTimer + 100 - (lvl * 10)) - (n * 5); 
+                let n = n;
+
+                // Score handling
+                let score = score + 1;
+                
+                do Output.backSpace();
+
+                if (score > 9) {
+                    do Output.backSpace();
+                }
+
+                if (score > 99) {
+                    do Output.backSpace();
+                }
+
+                if (score > 999) {
+                    do Output.backSpace();
+                }
+
+                do Output.printInt(score);
+
+
+                // Win condition
+                if (score = maxScore) {
+                    do exitScreen(true); 
+                    return this;
+                }
+
+            }
+
+        }
+        return this;
+    }
+
+    method void drawObstacle() {
+        do obstacle.show();
+        do obstacle.move();
+
+        return;
+    }
+
+    method void drawPlayer() {
+        do player.show();
+        do player.move();
+
+        return;
+    }
+
+
+    method void chooseLevel() {
+
+        do Output.printString("JUMPY BOX");
+
+        do Output.println();
+
+        let lvl = Keyboard.readInt("Odaberite tezinu (1 - 5): ");
+
+        let maxScore = Keyboard.readInt("Odaberite maksimalan score (10 - 9999): ");
+
+        if (lvl < 1) {let lvl = 1;}
+        if (lvl > 5) {let lvl = 5;}
+
+        if (maxScore < 10) {let maxScore = 10;}
+        if (maxScore > 9999) {let maxScore = 9999;}
+
+        do Screen.clearScreen();
+        do Output.moveCursor(3, 13);
+
+        do Output.printString("Level: ");
+        do Output.printInt(lvl);
+
+        do Output.printString("    ");
+        do Output.printString("Score: 0");
+
+        return;
+    }
+
+    method void exitScreen(boolean won) {
+
+        do Screen.clearScreen();
+
+        do Output.moveCursor(6, 24);
+
+        if (won) {
+            do Output.printString("JUMPY BOX WON");
+        }
+        else {
+            do Output.printString("JUMPY BOX LOST");
+        }
+
+        do Output.moveCursor(7, 26);
+        do Output.printString("Score: ");
+        do Output.printInt(score);
+
+        return;
+    }
+
+}
